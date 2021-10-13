@@ -1,0 +1,29 @@
+karthik_ragunath@Karthiks-MacBook-Pro ~ % python3 -m websockets ws://34.201.250.165:7890/
+Connected to ws://34.201.250.165:7890/.
+> '{"from_id": "1", "to_id": "2", "message": "Hello there!!! Hope you are doing?!!!"}'
+> {"register": true}'
+Connection closed: 1006 (connection closed abnormally [internal]).
+karthik_ragunath@Karthiks-MacBook-Pro ~ % python3 -m websockets ws://34.201.250.165:7890/
+Connected to ws://34.201.250.165:7890/.
+> {"register": true}
+< Device Successfully Registered
+> {"from_id": "1", "to_id": "2", "message": "Hello there!!! Hope you are doing?!!!"}
+< Message from 1: I am doing fine!!! Hope you are doing fine too?!!!
+> {"from_id": "1", "to_id": "2", "message": "I am doing fine too!!! Thanks for asking!!!"}
+
+
+(base) karthik_ragunath@Karthiks-MacBook-Pro ~ % conda deactivate
+karthik_ragunath@Karthiks-MacBook-Pro ~ % python3 -m websockets ws://34.201.250.165:7890/
+Connected to ws://34.201.250.165:7890/.
+> {"register": true}
+< Device Successfully Registered
+< Message from 0: Hello there!!! Hope you are doing?!!!
+> {"from_id": "2", "to_id": "1", "message": "I am doing fine!!! Hope you are doing fine too?!!!"}
+< Message from 2: I am doing fine too!!! Thanks for asking!!!
+< Message from 2: Hey there 2, let me introduce myself, I am 3!!!
+
+
+Postman
+New - Web Sockets - ws://34.201.250.165:7890/
+{"from_id": "3", "to_id": "2", "message": "Hey there 2, let me introduce myself, I am 3!!!"}
+
