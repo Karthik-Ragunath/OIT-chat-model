@@ -47,6 +47,25 @@ def extract_info(message):
             message_parser['is_valid'] = False
     return message_parser
 
+
+async def check_dm_queue(connected_set, connection_list):
+    try:
+        if r_queue.exists("dm_messages") == 1:
+            message = r_queue.lpop("dm_message")
+            deserialized_message = json.loads(message)
+            from_id = int(deserialized_message['from_id'])
+            to_id = int(deserialized_message['to_id'])
+            dm_message = deserialized_message['message']
+            # Temporary Hack
+            if len(connection_list) >= from_id and len(connected_list) >= to_id:
+                from_conn_object = connection_list[from_id - 1]
+                to_conn_object = connection_list[to_id - 1]
+                to_conn_object.send("Message from " + str(from_id + 1) + ": " + dm_message)
+            else:
+                r_queue.lpush("dm_message", message)
+    except Exception as e:
+        print("exception raised in redis dm queue checker:", e)
+
 async def echo(websocket, path):
     print("A client just connected")
     try:
