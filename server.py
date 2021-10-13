@@ -124,7 +124,7 @@ async def echo(websocket, path):
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
 
-start_server = websockets.serve(echo, "localhost", PORT_TO_LISTEN, reuse_port=True)
+start_server = websockets.serve(echo, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_until_complete(check_dm_queue())
 asyncio.get_event_loop().run_forever()
