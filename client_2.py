@@ -3,7 +3,7 @@ import asyncio
 import json
 
 def create_dm_message_content():
-    msg_dict = {"from_id":"2", "to_id":"1", "message":"Hello there!!! Hope you are doing?!!!"}
+    msg_dict = {"from_id":"2", "to_id":"1", "message":"Hello there!!! I am doing fine. Hope you are doing?!!!"}
     msg_dict_dump = json.dumps(msg_dict)
     return msg_dict_dump
 
