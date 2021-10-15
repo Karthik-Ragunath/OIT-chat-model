@@ -117,12 +117,13 @@ def extract_info(message, websocket):
         message_parser['is_valid'] = True
         return message_parser
 
+    message_parser['from_id'] = device_mapping
+
     if message.get('question', False):
         message_parser['question'] = message['question']
         message_parser['is_valid'] = True
         return message_parser
-
-    message_parser['from_id'] = device_mapping
+    
     if not message.get('message', None):
         # No message param in message dictionary, nothing to do here
         return message_parser
