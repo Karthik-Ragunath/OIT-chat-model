@@ -34,7 +34,7 @@ class connection_object(object):
 # Just an illustration of backend infraset to make search queries work
 # Very few data is indexed in Solr at the moment. Just for illustration purpose
 def handle_search_queries(query):
-    solr_url = "http://" + solr_ip + "/solr/" + CORENAME + "/select"
+    solr_url = "http://" + solr_ip + ':' + PORT + "/solr/" + CORENAME + "/select"
     r = requests.get(solr_url, params={"fq":query, "q":"*:*"})
     try:
         response = r.json()
@@ -123,7 +123,7 @@ def extract_info(message, websocket):
         message_parser['question'] = message['question']
         message_parser['is_valid'] = True
         return message_parser
-    
+
     if not message.get('message', None):
         # No message param in message dictionary, nothing to do here
         return message_parser
