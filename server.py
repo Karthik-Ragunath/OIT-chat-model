@@ -59,6 +59,7 @@ def set_auth_token_hash(device_mapping):
     auth_key = generate_hash(hash_len=16)
     auth_hash = generate_hash(hash_len=32)
     auth_tuple = (auth_key, auth_hash)
+    print("Auth Key:", auth_key, "Auth Hash:", auth_hash)
     r_auth_checker.set('auth_hash', auth_key, auth_hash)
     r_auth_checker.set('device_mapping', auth_hash, device_mapping)
     r_auth_checker.set('reverse_device_mapping', device_mapping, auth_hash)
