@@ -34,19 +34,13 @@ def generate_hash(hash_len=20):
 def get_device_mappings(auth_key, websocket, register=False):
     auth_hash = None
     device_mapping = None
-    session_table_update = False
     if auth_key and r_auth_checker.hexists('auth_hash', auth_key):
         auth_hash = str(r_auth_checker.hget("auth_hash", auth_key))
     if auth_hash and r_auth_checker.hexists('device_mapping', auth_hash):
         device_mapping = str(r_auth_checker.hget("device_mapping", auth_hash))
-    if register:
-        session_table_update = r_auth_checker.hset("session_table", device_mapping, pickle.dumps(websocket))
-        if auth_hash and device_mapping and session_table_update:
-            return auth_hash, device_mapping, session_table_update
-    else:
-        if auth_hash and device_mapping:
-            return auth_hash, device_mapping, None
-    return None, None, None
+    if auth_hash and device_mapping:
+        return auth_hash, device_mapping
+    return None, None
 
 
 def get_reverse_device_mapping(device_mapping):
@@ -74,7 +68,7 @@ def extract_info(message, websocket):
     device_mapping = None
 
     if auth_key:
-        auth_hash, device_mapping, _ = get_device_mappings(auth_key)
+        auth_hash, device_mapping = get_device_mappings(auth_key)
         if auth_hash and device_mapping:
             message_parser['auth_key'] = auth_key
             message_parser['auth_hash'] = auth_hash
@@ -86,8 +80,8 @@ def extract_info(message, websocket):
             message_parser['device_mapping'] = message['device_name']
             auth_tuple = set_auth_token_hash(message_parser['device_mapping'])
             if auth_tuple and auth_tuple[0] and auth_tuple[1] and message_parser['device_mapping']:
-                auth_hash, device_mapping, session_table_update = get_device_mappings(auth_tuple[0], websocket, register=True)
-                print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping, "Is Session Updated:", session_table_update)
+                auth_hash, device_mapping = get_device_mappings(auth_tuple[0], websocket, register=True)
+                print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping)
                 if auth_hash:
                     message_parser['auth_key'] = auth_tuple[0]
                     message_parser['auth_hash'] = auth_hash
@@ -160,7 +154,7 @@ async def echo(websocket, path):
                 if message_info.get('register', False):
                     if message_info.get('is_valid', False):
                         connected_set.add(websocket)
-                        conn_obj = connection_object(conn_id, websocket)
+                        conn_obj = connection_object(message_info['device_mapping'], websocket)
                         connection_dict[message_info['device_mapping']] = conn_obj
                         await conn_obj.websocket_conn.send("Device Successfully Registered")
                     else:
