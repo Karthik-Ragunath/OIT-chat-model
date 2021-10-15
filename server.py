@@ -68,7 +68,7 @@ def extract_info(message, websocket):
     device_mapping = None
 
     if auth_key:
-        auth_hash, device_mapping = get_device_mappings(auth_key)
+        auth_hash, device_mapping = get_device_mappings(auth_key, websocket)
         if auth_hash and device_mapping:
             message_parser['auth_key'] = auth_key
             message_parser['auth_hash'] = auth_hash
@@ -91,7 +91,7 @@ def extract_info(message, websocket):
     else:
         print("Cannot authenticate")
 
-    message_parser['from_id'] = message['device_name']
+    message_parser['from_id'] = device_mapping
     if not message.get('message', None):
         # No message param in message dictionary, nothing to do here
         return message_parser
@@ -164,7 +164,6 @@ async def echo(websocket, path):
                 print("Invalid message, nothing to do here")
                 continue
             from_id = message_info['from_id']
-            print("From Device:", from_id)
             from_conn_obj = connection_object[from_id]
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
