@@ -6,6 +6,7 @@ from redis import Redis
 import random, string
 import pickle
 import requests
+#from auth_utils import generate_hash, get_device_mappings, get_reverse_device_mapping, set_auth_token_hash, handle_disconnection
 
 # Port where websocket server is hosted in AWS EC2 machine
 PORT_TO_LISTEN = 7890
