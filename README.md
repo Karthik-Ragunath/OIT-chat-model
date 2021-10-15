@@ -39,15 +39,15 @@ Postman App to make Websocket calls to hosted server
 ### Sample Executions Between Two Designated People (Servers)
 
 ## Person 1 - Karthik Ragunath Ananda Kumar
-![alt text](https://drive.google.com/file/d/1TZJ_3qQeseDXiKwDtl52yK97iBOZXHD7/view?usp=sharing)
+![alt text](/Assets/Karthik_Ragunath_Process.png)
 
 
 ## Person 2 - Ananda Kumar
-![alt text](https://drive.google.com/file/d/1euPaW2xRzPD2z0tkER5dcCcLPzQ4Qmqk/view?usp=sharing)
+![alt text](/Assets/Ananda_Kumar_Process.png)
 
 
 ## Person 3 - Dhivya Nandhini
-![alt text](https://drive.google.com/file/d/1TgVrzCcrtXzheJBUq0QVB-hA8f4waDqM/view?usp=sharing)
+![alt text](/Assets/Dhivya_Nandhini_Process.png)
 
 
 ## Server 1
