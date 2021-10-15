@@ -18,7 +18,7 @@ r_auth_checker = Redis(host=redis_host, port=6379)
 connection_dict = dict()
 connecton_list = []
 
-solr_ip = 54.227.45.228
+solr_ip = "54.227.45.228"
 PORT = 8983
 CORENAME = "oit_help_desk"
 
