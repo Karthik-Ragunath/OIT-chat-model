@@ -83,7 +83,7 @@ def extract_info(message, websocket):
         if not auth_key:
             message_parser['register'] = True
             message_parser['device_mapping'] = message['device_name']
-            auth_tuple = set_auth_token_hash()
+            auth_tuple = set_auth_token_hash(message_parser['device_mapping'])
             if auth_tuple and auth_tuple[0] and auth_tuple[1] and message_parser['device_mapping']:
                 auth_hash, device_mapping, session_table_update = get_device_mappings(auth_tuple[0], websocket, register=True)
                 print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping, "Is Session Updated:", session_table_update)
