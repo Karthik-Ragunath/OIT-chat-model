@@ -150,7 +150,7 @@ async def echo(websocket, path):
             except Exception as e:
                 print("Message is not in a state where it could be deserialize the messgae. Skipping this message.")
                 continue
-            message_info = extract_info(deserialized_message)
+            message_info = extract_info(deserialized_message, websocket)
             print("Message Info:", message_info)
             if not message_info.get('is_valid', False):
                 print("Invalid message, nothing to do here")
