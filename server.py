@@ -152,9 +152,7 @@ async def echo(websocket, path):
                 continue
             message_info = extract_info(deserialized_message, websocket)
             print("Message Info:", message_info)
-            if not message_info.get('is_valid', False):
-                print("Invalid message, nothing to do here")
-                continue
+
             # Add Authentication Here
             if websocket not in connected_set:
                 if message_info.get('register', False):
@@ -168,9 +166,11 @@ async def echo(websocket, path):
                 else:
                      await conn_obj.websocket_conn.send("Must Register Your Device First")
                 continue
-            else:
-                from_id = message_info['device_name']
-                from_conn_obj = connection_object[from_id]
+            if not message_info.get('is_valid', False):
+                print("Invalid message, nothing to do here")
+                continue
+            from_id = message_info['device_name']
+            from_conn_obj = connection_object[from_id]
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
             #await websocket.send("Pong: " + "Thanks for the message. I will do the needful")
