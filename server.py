@@ -267,7 +267,8 @@ async def async_server(websocket, path):
 
 # Starting Async Server
 if __name__ == '__main__':
-    # asynchronously serving at port 0.0.0.0
+    # asynchronously serving at port 0.0.0.0 and listening to incoming requests at port 7890
+    print("Server listening on port: 7890")
     start_server = websockets.serve(async_server, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_until_complete(check_dm_queue())
