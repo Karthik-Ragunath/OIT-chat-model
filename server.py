@@ -34,12 +34,12 @@ def get_device_mappings(auth_key, websocket, register=False):
     auth_hash = None
     device_mapping = None
     session_table_update = False
-    if auth_key and r_auth_checker.hexists('auth_hash', auth_key):
-        auth_hash = str(r_auth_checker.hget("auth_hash", auth_key))
-    if auth_hash and r_auth_checker.hexists('device_mapping', auth_hash):
-        device_mapping = str(r_auth_checker.hget("device_mapping", auth_hash))
+    if auth_key and r_auth_checker.exists('auth_hash', auth_key):
+        auth_hash = str(r_auth_checker.get("auth_hash", auth_key))
+    if auth_hash and r_auth_checker.exists('device_mapping', auth_hash):
+        device_mapping = str(r_auth_checker.get("device_mapping", auth_hash))
     if register:
-        session_table_update = r_auth_checker.hset("session_table", device_mapping, websocket)    
+        session_table_update = r_auth_checker.set("session_table", device_mapping, websocket)    
         if auth_hash and device_mapping and session_table_update:
             return auth_hash, device_mapping, session_table_update
     else:
@@ -49,8 +49,8 @@ def get_device_mappings(auth_key, websocket, register=False):
 
 
 def get_reverse_device_mapping(device_mapping):
-    if r_auth_checker.hexists('reverse_device_mapping', device_mapping):
-        return str(r_auth_checker.hget('reverse_device_mapping', device_mapping))
+    if r_auth_checker.exists('reverse_device_mapping', device_mapping):
+        return str(r_auth_checker.get('reverse_device_mapping', device_mapping))
     else:
         return None
 
@@ -59,9 +59,9 @@ def set_auth_token_hash(device_mapping):
     auth_key = generate_hash(hash_len=16)
     auth_hash = generate_hash(hash_len=32)
     auth_tuple = (auth_key, auth_hash)
-    r_auth_checker.hset('auth_hash', auth_key, auth_hash)
-    r_auth_checker.hset('device_mapping', auth_hash, device_mapping)
-    r_auth_checker.hset('reverse_device_mapping', device_mapping, auth_hash)
+    r_auth_checker.set('auth_hash', auth_key, auth_hash)
+    r_auth_checker.set('device_mapping', auth_hash, device_mapping)
+    r_auth_checker.set('reverse_device_mapping', device_mapping, auth_hash)
     return auth_tuple
 
 
