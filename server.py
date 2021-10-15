@@ -35,7 +35,7 @@ class connection_object(object):
 # Very few data is indexed in Solr at the moment. Just for illustration purpose
 def handle_search_queries(query):
     solr_url = "http://" + solr_ip + "/solr/" + CORENAME + "/select"
-    r = requests.get(solr_url, params={"fq":query "q":"*:*"})
+    r = requests.get(solr_url, params={"fq":query, "q":"*:*"})
     try:
         response = r.json()
         solr_docs = response['docs']
