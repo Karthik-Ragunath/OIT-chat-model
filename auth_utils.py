@@ -4,7 +4,9 @@ from redis import Redis
 redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
 r_auth_checker = Redis(host=redis_host, port=6379)
 
-# Util function to generate hash
+# Authenticaton related Utility functions
+
+## Utility function to generate hash
 def generate_hash(hash_len=20):
     auth = ''.join(random.choices(string.ascii_letters + string.digits, k=hash_len))
     return auth
@@ -37,8 +39,9 @@ def set_auth_token_hash(device_mapping, auth_key_len=16, auth_hash_len=32):
     r_auth_checker.hset('reverse_device_mapping', device_mapping, auth_hash)
     return auth_tuple
 
+
 # Cleaning up on deletion of websocket connection
-def handle_disconnection(message_info, message_info, connection_dict):
+def handle_disconnection(message_info, connected_set, connection_dict):
     r_auth_checker.hdel('auth_hash', message_info['auth_key'])
     r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
     r_auth_checker.hdel('reverse_device_mapping', message_info['device_mapping'])
