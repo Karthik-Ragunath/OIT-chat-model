@@ -35,6 +35,7 @@ class connection_object(object):
 # Very few data is indexed in Solr at the moment. Just for illustration purpose
 def handle_search_queries(query):
     solr_url = "http://" + solr_ip + ':' + PORT + "/solr/" + CORENAME + "/select"
+    fq_query = 'question:' + query
     r = requests.get(solr_url, params={"fq":query, "q":"*:*"})
     try:
         response = r.json()
@@ -218,6 +219,7 @@ async def echo(websocket, path):
             if message_info.get('question', False):
                 question_response = handle_search_queries(message_info['question'])
                 await from_conn_obj.websocket_conn.send(question_response)
+                continue
 
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
