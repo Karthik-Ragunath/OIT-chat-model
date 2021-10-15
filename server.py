@@ -36,6 +36,7 @@ class connection_object(object):
 def handle_search_queries(query):
     solr_url = "http://" + solr_ip + ':' + PORT + "/solr/" + CORENAME + "/select"
     fq_query = 'question:' + query
+    print("fq_query:", fq_query)
     r = requests.get(solr_url, params={"fq":fq_query, "q":"*:*"})
     try:
         response = r.json()
