@@ -40,7 +40,7 @@ def handle_search_queries(query):
     r = requests.get(solr_url, params={"fq":fq_query, "q":"*:*"})
     try:
         response = r.json()
-        solr_docs = response['docs']
+        solr_docs = response['response']['docs']
         if solr_docs:
             top_result = solr_docs[0]
             print("Top Result:", top_result)
