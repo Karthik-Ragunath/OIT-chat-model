@@ -91,6 +91,10 @@ def extract_info(message, websocket):
     else:
         print("Cannot authenticate")
 
+    if message.get('disconnect', False):
+        message_parser['is_valid'] = True
+        return
+
     message_parser['from_id'] = device_mapping
     if not message.get('message', None):
         # No message param in message dictionary, nothing to do here
@@ -111,6 +115,14 @@ def extract_info(message, websocket):
         else:
             message_parser['is_valid'] = False
     return message_parser
+
+
+def handle_disconnection(message_info):
+    r_auth_checker.hdel('auth_hash', message_info['auth_key'])
+    r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
+    r_auth_checker.hdel('reverse_device_mapping', message_info['device_mapping'])
+    connected_set.remove(connection_dict[message_info['device_mapping']])
+    connection_dict.pop(message_info['device_mapping'], None)
 
 
 async def check_dm_queue():
@@ -161,9 +173,16 @@ async def echo(websocket, path):
                 else:
                      await websocket.send("Must Register Your Device First")
                 continue
+
             if not message_info.get('is_valid', False):
                 print("Invalid message, nothing to do here")
                 continue
+
+            if message_info.get('disconnect', True):
+                print("Handling disconnection")
+                handle_disconnection(message_info)
+                continue
+
             from_id = message_info['from_id']
             from_conn_obj = connection_dict[from_id]
             print("Received message from client: " + message)
