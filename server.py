@@ -132,7 +132,8 @@ async def echo(websocket, path):
                     await conn_obj.websocket_conn.send("Device Successfully Registered")
                     r_auth_checker.hset("auth_token", message_info[0], message_info[1])
                     r_auth_checker.hset("device_mapping", message_info['device_name'], mesage_info['auth_hash'])
-                else:
+                    r_session = r_auth_checker.hset("session_table", message_info['device_name'], websokcet)
+:                else:
                     print("Must register the device first")
                 continue
             else:
