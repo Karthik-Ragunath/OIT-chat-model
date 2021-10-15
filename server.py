@@ -19,7 +19,7 @@ connection_dict = dict()
 connecton_list = []
 
 solr_ip = "54.227.45.228"
-PORT = 8983
+PORT = "8983"
 CORENAME = "oit_help_desk"
 
 class connection_object(object):
