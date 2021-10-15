@@ -244,7 +244,7 @@ async def echo(websocket, path):
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
     except Exception as e:
-        print("Unhandled Exception has occured")
+        print("Unhandled Exception has occured:", e)
 
 
 start_server = websockets.serve(echo, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
