@@ -89,7 +89,7 @@ Connected to ws://34.201.250.165:7890/.
 
 ### Sample Execution Automated Message Response Mode (Implmented with Apache Solr Search Engine hosted at 54.227.45.228)
 
-## Client Server ()
+## Client Server
 
 ```
 karthik_ragunath@Karthiks-MacBook-Pro ~ % python3 -m websockets ws://34.201.250.165:7890/
@@ -106,6 +106,7 @@ Connected to ws://34.201.250.165:7890/.
 
 ```
 
+## Automated Response Server
 
 ```
 (venv) ubuntu@ip-172-31-87-206:~/oit-chat-search$ python ./server.py
