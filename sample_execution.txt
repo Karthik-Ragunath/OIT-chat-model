@@ -27,3 +27,9 @@ Postman
 New - Web Sockets - ws://34.201.250.165:7890/
 {"from_id": "3", "to_id": "2", "message": "Hey there 2, let me introduce myself, I am 3!!!"}
 
+
+-------
+> {"register": true, "device_name": "Karthik Ragunath"}
+> {"auth_key":"MvSAKjza7L26iexq", "to_id": "Dhivya Nandhini", "message": "Hello there!!! Hope you are doing?!!!"}
+> {"disconnect": true, "auth_key":"GIUQ4yyGJGJCgAOs"}
+> {"auth_key":"GIUQ4yyGJGJCgAOs", "to_id": "Karthik Ragunath", "message": "I am doing fine. How about you???"}

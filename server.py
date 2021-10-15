@@ -4,6 +4,7 @@ import json
 from redis import Redis
 import random, string
 import pickle
+import requests
 
 PORT_TO_LISTEN = 7890
 
@@ -17,6 +18,9 @@ r_auth_checker = Redis(host=redis_host, port=6379)
 connection_dict = dict()
 connecton_list = []
 
+solr_ip = 54.227.45.228
+PORT = 8983
+CORENAME = "oit_help_desk"
 
 class connection_object(object):
     def __init__(self, device_name, websocket_conn):
@@ -26,6 +30,23 @@ class connection_object(object):
     def get_object(self):
         return self.websocket_conn
 
+
+# Just an illustration of backend infraset to make search queries work
+# Very few data is indexed in Solr at the moment. Just for illustration purpose
+def handle_search_queries(query):
+    solr_url = "http://" + solr_ip + "/solr/" + CORENAME + "/select"
+    r = requests.get(solr_url, params={"fq":query "q":"*:*"})
+    try:
+        response = r.json()
+        solr_docs = response['docs']
+        if solr_docs:
+            top_result = solr_docs[0]
+            top_response = top_result['answer'] + " " + top_result['http_link']
+            return top_response
+        return "Our representative will get in-touch with you"
+    except Exception as e:
+        # default exception return message
+        return "Our representative will get in-touch with you"
 
 def generate_hash(hash_len=20):
     auth = ''.join(random.choices(string.ascii_letters + string.digits, k=hash_len))
@@ -93,6 +114,11 @@ def extract_info(message, websocket):
 
     if message.get('disconnect', False):
         message_parser['disconnect'] = True
+        message_parser['is_valid'] = True
+        return message_parser
+
+    if message.get('question', False):
+        message_parser['question'] = message['question']
         message_parser['is_valid'] = True
         return message_parser
 
@@ -187,6 +213,11 @@ async def echo(websocket, path):
 
             from_id = message_info['from_id']
             from_conn_obj = connection_dict[from_id]
+
+            if message_info.get('question', False):
+                question_response = handle_search_queries(message_info['question'])
+                await from_conn_obj.websocket_conn.send(question_response)
+
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
             #await websocket.send("Pong: " + "Thanks for the message. I will do the needful")
