@@ -197,7 +197,7 @@ async def async_server(websocket, path):
 
             if message_info.get('is_group', False):
                 # Handling Group Messages
-                for conn in connected:
+                for conn in connected_set:
                     if conn != from_conn_obj:
                         await conn.send("Message from " + message_info['from_id'] + ": " + message)
                 print("group message sent successfully")
