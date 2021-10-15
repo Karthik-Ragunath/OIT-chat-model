@@ -231,26 +231,30 @@ async def async_server(websocket, path):
             from_id = message_info['from_id']
             from_conn_obj = connection_dict[from_id]
 
+            # handling automated questions
             if message_info.get('question', False):
                 question_response = handle_search_queries(message_info['question'])
                 await from_conn_obj.websocket_conn.send(question_response)
                 continue
 
             print("Received message from client: " + message)
-            ## for broadcasting to everyone; basically message from server
-            #await websocket.send("Pong: " + "Thanks for the message. I will do the needful")
+
             if message_info.get('is_group', False):
+                # Handling Group Messages
                 for conn in connected:
                     if conn != from_conn_obj:
                         await conn.send("Message from " + message_info['from_id'] + ": " + message)
                 print("group message sent successfully")
             else:
+                # Handling Personal DMS to designed OIT Staffs
                 try:
                     to_id = message_info['to_id']
                     to_conn_object = connection_dict[to_id]
                     await to_conn_object.websocket_conn.send("Message from " + from_id + ": " + message_info['message'])
                     print("dm message sent successfully")
                 except Exception as e:
+                    # Handling case when designated OIT Staff is not online. 
+                    # Queueing the messages so that messages will be available once he/she logins
                     print("Exception is:", e)
                     dm_dict = dict()
                     dm_dict['from_id'] = from_id
