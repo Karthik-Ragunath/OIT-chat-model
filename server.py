@@ -118,6 +118,7 @@ def extract_info(message, websocket):
     return message_parser
 
 
+# Cleanup on deletion
 def handle_disconnection(message_info):
     r_auth_checker.hdel('auth_hash', message_info['auth_key'])
     r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
