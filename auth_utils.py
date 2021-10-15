@@ -1,5 +1,6 @@
 import random, string
 from redis import Redis
+import json
 
 redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
 r_auth_checker = Redis(host=redis_host, port=6379)
@@ -10,6 +11,7 @@ r_auth_checker = Redis(host=redis_host, port=6379)
 def generate_hash(hash_len=20):
     auth = ''.join(random.choices(string.ascii_letters + string.digits, k=hash_len))
     return auth
+
 
 # Checking distributed key store to get authentication info
 def get_device_mappings(auth_key, websocket):
@@ -23,11 +25,13 @@ def get_device_mappings(auth_key, websocket):
         return auth_hash, device_mapping
     return None, None
 
+
 def get_reverse_device_mapping(device_mapping):
     if r_auth_checker.hexists('reverse_device_mapping', device_mapping):
         return (r_auth_checker.hget('reverse_device_mapping', device_mapping)).decode()
     else:
         return None
+
 
 # Generating Auth token hashed for new clients
 def set_auth_token_hash(device_mapping, auth_key_len=16, auth_hash_len=32):
