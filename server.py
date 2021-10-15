@@ -93,7 +93,7 @@ def extract_info(message, websocket):
 
     if message.get('disconnect', False):
         message_parser['is_valid'] = True
-        return
+        return message_parser
 
     message_parser['from_id'] = device_mapping
     if not message.get('message', None):
