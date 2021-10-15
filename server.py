@@ -163,7 +163,7 @@ async def echo(websocket, path):
             if not message_info.get('is_valid', False):
                 print("Invalid message, nothing to do here")
                 continue
-            from_id = message_info['device_name']
+            from_id = message_info['from_id']
             from_conn_obj = connection_object[from_id]
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
