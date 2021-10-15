@@ -158,9 +158,9 @@ async def echo(websocket, path):
                         connection_dict[message_info['device_mapping']] = conn_obj
                         await conn_obj.websocket_conn.send("Device Successfully Registered")
                     else:
-                        await conn_obj.websocket_conn.send("Could Not Register Your Device Successfully")
+                        await websocket.send("Could Not Register Your Device Successfully")
                 else:
-                     await conn_obj.websocket_conn.send("Must Register Your Device First")
+                     await websocket.send("Must Register Your Device First")
                 continue
             if not message_info.get('is_valid', False):
                 print("Invalid message, nothing to do here")
