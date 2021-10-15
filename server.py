@@ -3,6 +3,7 @@ import asyncio
 import json
 from redis import Redis
 import random, string
+import pickle
 
 PORT_TO_LISTEN = 7890
 
@@ -39,7 +40,7 @@ def get_device_mappings(auth_key, websocket, register=False):
     if auth_hash and r_auth_checker.hexists('device_mapping', auth_hash):
         device_mapping = str(r_auth_checker.hget("device_mapping", auth_hash))
     if register:
-        session_table_update = r_auth_checker.hset("session_table", device_mapping, websocket)    
+        session_table_update = r_auth_checker.hset("session_table", device_mapping, pickle.dumps(websocket))
         if auth_hash and device_mapping and session_table_update:
             return auth_hash, device_mapping, session_table_update
     else:
