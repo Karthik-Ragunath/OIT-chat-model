@@ -127,6 +127,7 @@ async def check_dm_queue():
                         from_conn_object = connection_dict[from_id]
                         to_conn_object = connection_dict[to_id]
                         await to_conn_object.websocket_conn.send("Message from " + from_id + ": " + dm_message)
+                        await from_conn_object.websocket_conn.send("Message: " + dm_message + " delivered to " + to_id)
                         print("One less message in dm queue, pheww")
                     else:
                         r_queue.lpush("dm_messages", message)
@@ -187,7 +188,7 @@ async def echo(websocket, path):
                     dm_dict['message'] = message_info['message']
                     r_queue.lpush("dm_messages", json.dumps(dm_dict))
                     print("dm message pushed to wait queue")
-                    await to_conn_object.websocket_conn.send(to_id + " is not online yet")
+                    await from_conn_obj.websocket_conn.send(to_id + " is not online yet")
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
 
