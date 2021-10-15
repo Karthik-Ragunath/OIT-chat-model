@@ -2,6 +2,7 @@ import websockets
 import asyncio
 import json
 from redis import Redis
+import random, string
 
 PORT_TO_LISTEN = 7890
 
@@ -10,6 +11,10 @@ print("Server listening on port:", PORT_TO_LISTEN)
 connected_set = set()
 connection_list = []
 r_queue = Redis()
+redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
+
+r_auth_checker = Redis(host=redis_host, port=6379)
+
 
 class connection_object(object):
     def __init__(self, conn_id, websocket_conn):
@@ -19,13 +24,42 @@ class connection_object(object):
     def get_object(self):
         return self.websocket_conn
 
+def generate_hash(hash_len=20):
+    auth = ''.join(random.choices(string.ascii_letters + string.digits, k=hash_len))
+    return auth
+
+def set_auth_token_hash():
+    auth = generate_hash(hash_len=16)
+    auth_hash = generate_hash(hash_len=32)
+    auth_tuple = (auth, auth_hash)
+    return auth_tuple
+
+def authentication(auth_token):
+    r_auth_token = r_auth_checker.hexists("auth_token", auth_token)
+    if r_auth_token:
+        message_token_hash = r_auth_checker.hget("auth_token", auth_token)
+        return message_token_hash
+    else:
+        return False
+
+
 def extract_info(message):
     message_parser = dict()
     message_parser['is_valid'] = False
 
     if message.get("register", None):
         message_parser['register'] = True
+        message_parser['device_name'] = message['device_name']
         message_parser['is_valid'] = True
+        auth_tuple = set_auth_token_hash()
+        if auth_tuple:
+            message_parser['auth_key'] = auth_tuple[0]
+            message_parser['auth_hash'] = auth_tuple[1]
+        return message_parser
+
+    auth_key = messgae_parser.get('auth_key', None)
+    auth_token = authentication(auth_key)
+    if not auth_token:
         return message_parser
 
     message_parser['from_id'] = message['from_id']
@@ -73,6 +107,7 @@ async def check_dm_queue():
             print("exception raised in redis dm queue checker:", e)
         await asyncio.sleep(1)
 
+
 async def echo(websocket, path):
     print("A client just connected")
     try:
@@ -95,6 +130,8 @@ async def echo(websocket, path):
                     connection_list.append(connection_object(conn_id, websocket))
                     conn_obj = connection_list[-1]
                     await conn_obj.websocket_conn.send("Device Successfully Registered")
+                    r_auth_checker.hset("auth_token", message_info[0], message_info[1])
+                    r_device_registration("device_mapping", message_info['device_name'], mesage
                 else:
                     print("Must register the device first")
                 continue
