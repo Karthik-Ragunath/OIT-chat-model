@@ -76,19 +76,19 @@ def extract_info(message, websocket):
             message_parser['device_mapping'] = device_mapping
 
     elif message.get("register", None):
-        if not auth_key:
-            message_parser['register'] = True
-            message_parser['device_mapping'] = message['device_name']
-            auth_tuple = set_auth_token_hash(message_parser['device_mapping'])
-            if auth_tuple and auth_tuple[0] and auth_tuple[1] and message_parser['device_mapping']:
-                auth_hash, device_mapping = get_device_mappings(auth_tuple[0], websocket)
-                print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping)
-                if auth_hash:
-                    message_parser['auth_key'] = auth_tuple[0]
-                    message_parser['auth_hash'] = auth_hash
-                    message_parser['device_mapping'] = device_mapping
-                    connection_dict[device_mapping] = websocket
-                    message_parser['is_valid'] = True
+        message_parser['register'] = True
+        message_parser['device_mapping'] = message['device_name']
+        auth_tuple = set_auth_token_hash(message_parser['device_mapping'])
+        print("Auth Tuple:", auth_tuple)
+        if auth_tuple and auth_tuple[0] and auth_tuple[1] and message_parser['device_mapping']:
+            auth_hash, device_mapping = get_device_mappings(auth_tuple[0], websocket)
+            print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping)
+            if auth_hash:
+                message_parser['auth_key'] = auth_tuple[0]
+                message_parser['auth_hash'] = auth_hash
+                message_parser['device_mapping'] = device_mapping
+                connection_dict[device_mapping] = websocket
+                message_parser['is_valid'] = True
         return message_parser
 
     else:
