@@ -1,3 +1,4 @@
+# Importing Packages
 import websockets
 import asyncio
 import json
@@ -6,22 +7,25 @@ import random, string
 import pickle
 import requests
 
+# Port where websocket server is hosted in AWS EC2 machine
 PORT_TO_LISTEN = 7890
 
-print("Server listening on port:", PORT_TO_LISTEN)
-
-connected_set = set()
+# Redis Cluster parameters hosted in AWS
 r_queue = Redis()
 redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
-
 r_auth_checker = Redis(host=redis_host, port=6379)
-connection_dict = dict()
-connecton_list = []
 
+# Parameters of Apache Solr Search Engine hosted in a EC2 machine
 solr_ip = "54.227.45.228"
 PORT = "8983"
 CORENAME = "oit_help_desk"
 
+# Data variables used for in-memory computations
+connected_set = set()
+connection_dict = dict()
+connecton_list = []
+
+# Websocket Connection Class Object
 class connection_object(object):
     def __init__(self, device_name, websocket_conn):
         self.device_name = device_name
@@ -30,6 +34,8 @@ class connection_object(object):
     def get_object(self):
         return self.websocket_conn
 
+
+## Solr Search Query Handler
 
 # Just an illustration of backend infraset to make search queries work
 # Very few data is indexed in Solr at the moment. Just for illustration purpose
@@ -51,11 +57,15 @@ def handle_search_queries(query):
         # default exception return message
         return "Our representative will get in-touch with you"
 
+# Util function to generate hash
 def generate_hash(hash_len=20):
     auth = ''.join(random.choices(string.ascii_letters + string.digits, k=hash_len))
     return auth
 
 
+## Util functions for getting authentication related information
+
+# Checking distributed key store to get authentication info
 def get_device_mappings(auth_key, websocket):
     auth_hash = None
     device_mapping = None
@@ -67,14 +77,13 @@ def get_device_mappings(auth_key, websocket):
         return auth_hash, device_mapping
     return None, None
 
-
 def get_reverse_device_mapping(device_mapping):
     if r_auth_checker.hexists('reverse_device_mapping', device_mapping):
         return (r_auth_checker.hget('reverse_device_mapping', device_mapping)).decode()
     else:
         return None
 
-
+# Generating Auth token hashed for new clients
 def set_auth_token_hash(device_mapping):
     auth_key = generate_hash(hash_len=16)
     auth_hash = generate_hash(hash_len=32)
@@ -84,7 +93,18 @@ def set_auth_token_hash(device_mapping):
     r_auth_checker.hset('reverse_device_mapping', device_mapping, auth_hash)
     return auth_tuple
 
+# Cleaning up on deletion of websocket connection
+def handle_disconnection(message_info):
+    r_auth_checker.hdel('auth_hash', message_info['auth_key'])
+    r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
+    r_auth_checker.hdel('reverse_device_mapping', message_info['device_mapping'])
+    connected_set.remove(connection_dict[message_info['device_mapping']].websocket_conn)
+    connection_dict.pop(message_info['device_mapping'], None)
 
+
+## Request Handlers
+
+# Incoming web-socket request parser
 def extract_info(message, websocket):
     message_parser = dict()
     message_parser['is_valid'] = False
@@ -147,16 +167,8 @@ def extract_info(message, websocket):
             message_parser['is_valid'] = False
     return message_parser
 
-
-# Cleanup on deletion
-def handle_disconnection(message_info):
-    r_auth_checker.hdel('auth_hash', message_info['auth_key'])
-    r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
-    r_auth_checker.hdel('reverse_device_mapping', message_info['device_mapping'])
-    connected_set.remove(connection_dict[message_info['device_mapping']].websocket_conn)
-    connection_dict.pop(message_info['device_mapping'], None)
-
-
+# Async function running forever looking for incoming messages in redis-queue
+# Implemented to handle the case whent the user isn't online
 async def check_dm_queue():
     while True:
         try:
@@ -179,8 +191,9 @@ async def check_dm_queue():
             print("exception raised in redis dm queue checker:", e)
         await asyncio.sleep(1)
 
-
-async def echo(websocket, path):
+## Asyn server handling incoming request calls.
+# Implemnted to demostrate working of a gateway server in chat application
+async def async_server(websocket, path):
     print("A client just connected")
     try:
         async for message in websocket:
@@ -192,7 +205,7 @@ async def echo(websocket, path):
             message_info = extract_info(deserialized_message, websocket)
             print("Message Info:", message_info)
 
-            # Add Authentication Here
+            # Authentication mechanism functions are orchastrated in this stub of code
             if websocket not in connected_set:
                 if message_info.get('register', False):
                     if message_info.get('is_valid', False):
@@ -248,11 +261,14 @@ async def echo(websocket, path):
                     await from_conn_obj.websocket_conn.send(to_id + " is not online yet")
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
-    # except Exception as e:
-    #     print("Unhandled Exception has occured:", e)
+    except Exception as e:
+        print("Unhandled Exception has occured:", e)
 
 
-start_server = websockets.serve(echo, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_until_complete(check_dm_queue())
-asyncio.get_event_loop().run_forever()
+# Starting Async Server
+if __name__ == '__main__':
+    # asynchronously serving at port 0.0.0.0
+    start_server = websockets.serve(async_server, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_until_complete(check_dm_queue())
+    asyncio.get_event_loop().run_forever()
