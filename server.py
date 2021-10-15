@@ -35,10 +35,9 @@ def get_device_mappings(auth_key, websocket):
     auth_hash = None
     device_mapping = None
     if auth_key and r_auth_checker.hexists('auth_hash', auth_key):
-        auth_hash = str(r_auth_checker.hget("auth_hash", auth_key))
+        auth_hash = (r_auth_checker.hget("auth_hash", auth_key)).decode()
     if auth_hash and r_auth_checker.hexists('device_mapping', auth_hash):
-        device_mapping = str(r_auth_checker.hget("device_mapping", auth_hash))
-    print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping, "Inside GET DEVICE MAPPINGS")
+        device_mapping = (r_auth_checker.hget("device_mapping", auth_hash)).decode()
     if auth_hash and device_mapping:
         return auth_hash, device_mapping
     return None, None
@@ -46,7 +45,7 @@ def get_device_mappings(auth_key, websocket):
 
 def get_reverse_device_mapping(device_mapping):
     if r_auth_checker.hexists('reverse_device_mapping', device_mapping):
-        return str(r_auth_checker.hget('reverse_device_mapping', device_mapping))
+        return (r_auth_checker.hget('reverse_device_mapping', device_mapping)).decode()
     else:
         return None
 
@@ -79,10 +78,8 @@ def extract_info(message, websocket):
         message_parser['register'] = True
         message_parser['device_mapping'] = message['device_name']
         auth_tuple = set_auth_token_hash(message_parser['device_mapping'])
-        print("Auth Tuple:", auth_tuple)
         if auth_tuple and auth_tuple[0] and auth_tuple[1] and message_parser['device_mapping']:
             auth_hash, device_mapping = get_device_mappings(auth_tuple[0], websocket)
-            print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping)
             if auth_hash:
                 message_parser['auth_key'] = auth_tuple[0]
                 message_parser['auth_hash'] = auth_hash
