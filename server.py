@@ -91,7 +91,7 @@ def extract_info(message, websocket):
     else:
         print("Cannot authenticate")
 
-    message_parser['from_id'] = message_parser['device_mapping']
+    message_parser['from_id'] = message_parser['device_name']
     if not message.get('message', None):
         # No message param in message dictionary, nothing to do here
         return message_parser
