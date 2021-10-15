@@ -178,7 +178,7 @@ async def echo(websocket, path):
                 print("Invalid message, nothing to do here")
                 continue
 
-            if message_info.get('disconnect', True):
+            if message_info.get('disconnect', False):
                 print("Handling disconnection")
                 handle_disconnection(message_info)
                 continue
