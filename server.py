@@ -74,7 +74,7 @@ def extract_info(message, websocket):
 
     if auth_key:
         auth_hash, device_mapping, _ = get_device_mappings(auth_key)
-        if auth_hash, device_mapping:
+        if auth_hash and device_mapping:
             message_parser['auth_key'] = auth_key
             message_parser['auth_hash'] = auth_hash
             message_parser['device_mapping'] = device_mapping
