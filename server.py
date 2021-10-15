@@ -165,7 +165,7 @@ async def echo(websocket, path):
                         await conn_obj.websocket_conn.send("Device Successfully Registered")
                     else:
                         await conn_obj.websocket_conn.send("Could Not Register Your Device Successfully")
-:                else:
+                else:
                      await conn_obj.websocket_conn.send("Must Register Your Device First")
                 continue
             else:
