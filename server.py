@@ -85,8 +85,6 @@ def extract_info(message, websocket):
                 message_parser['auth_key'] = auth_tuple[0]
                 message_parser['auth_hash'] = auth_hash
                 message_parser['device_mapping'] = device_mapping
-                print("Type:", type(device_mapping))
-                connection_dict[device_mapping] = websocket
                 message_parser['is_valid'] = True
         return message_parser
 
@@ -155,6 +153,7 @@ async def echo(websocket, path):
                     if message_info.get('is_valid', False):
                         connected_set.add(websocket)
                         conn_obj = connection_object(message_info['device_mapping'], websocket)
+                        print(message_info['device_mapping'], type(message_info['device_mapping']), '*'*20)
                         connection_dict[message_info['device_mapping']] = conn_obj
                         await conn_obj.websocket_conn.send("Device Successfully Registered. Note down your api_key: " + message_info['auth_key'])
                     else:
