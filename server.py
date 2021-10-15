@@ -15,6 +15,7 @@ redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
 
 r_auth_checker = Redis(host=redis_host, port=6379)
 connection_dict = dict()
+connecton_list = []
 
 
 class connection_object(object):
@@ -84,6 +85,7 @@ def extract_info(message, websocket):
                 message_parser['auth_key'] = auth_tuple[0]
                 message_parser['auth_hash'] = auth_hash
                 message_parser['device_mapping'] = device_mapping
+                print("Type:", type(device_mapping))
                 connection_dict[device_mapping] = websocket
                 message_parser['is_valid'] = True
         return message_parser
