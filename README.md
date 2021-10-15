@@ -129,3 +129,41 @@ fq_query: question:on-campus location
 Top Result: {'id': '2', 'question': 'where is the oit-help-desk located on-campus?', 'answer': 'It is located in SSB building opposite to Eugene McDermott Library. For map link, refer http link attached i
 n this document', 'http_link': 'https://map.concept3d.com/?id=1772#!sbc/?bm/?ct/42147', '_version_': 1713619015365033984}
 ```
+
+### Sample Execution Group Mode 
+
+## From Server Node's Point of View
+
+```
+Server listening on port: 7890
+A client just connected
+Message Info: {'is_valid': True, 'register': True, 'device_mapping': 'Karthik Ragunath', 'auth_key': 'hmbWcopqiNLRxwSh', 'auth_hash': 'WAW3buqGk4LQjjfiiopelFGcCra6Km90'}
+A client just connected
+Message Info: {'is_valid': True, 'register': True, 'device_mapping': 'Ananda Kumar', 'auth_key': 'MeBGqG3DHBsPo85x', 'auth_hash': 'FcErINIUHQKO5MSnU7SR2I7dKpvQDJFB'}
+A client just connected
+Message Info: {'is_valid': True, 'register': True, 'device_mapping': 'Rajya Laxmi', 'auth_key': 'CPWnEzLRMs4SyCt2', 'auth_hash': 'KYNzdlv8qxyREKqa4pN7zvDRwqRj5aSM'}
+A client just connected
+Message Info: {'is_valid': True, 'register': True, 'device_mapping': 'Dhivya Nandhini', 'auth_key': 'qLxy5N3zcuEoRBkX', 'auth_hash': '2OYK7jc7rMzOrcZRjWKdmmgTPpjkwnSf'}
+Message Info: {'is_valid': True, 'auth_key': 'hmbWcopqiNLRxwSh', 'auth_hash': 'WAW3buqGk4LQjjfiiopelFGcCra6Km90', 'device_mapping': 'Karthik Ragunath', 'from_id': 'Karthik Ragunath', 'message': 'Hey Guys!!!', 'is_group': False, 'to_id': 'is_group'}
+Received message from client: {"auth_key":"hmbWcopqiNLRxwSh", "to_id": "is_group", "message": "Hey Guys!!!"}
+
+Exception is: 'is_group'
+dm message pushed to wait queue
+Message Info: {'is_valid': True, 'auth_key': 'hmbWcopqiNLRxwSh', 'auth_hash': 'WAW3buqGk4LQjjfiiopelFGcCra6Km90', 'device_mapping': 'Karthik Ragunath', 'from_id': 'Karthik Ragunath', 'message': 'Hey Guys!!!', 'is_group': True}
+Received message from client: {"auth_key":"hmbWcopqiNLRxwSh", "is_group": true, "message": "Hey Guys!!!"}
+
+group message sent successfully
+
+```
+
+## From Client Node Which Made Group Message's Point of View
+
+```
+karthik_ragunath@Karthiks-MacBook-Pro ~ % python3 -m websockets ws://34.201.250.165:7890/
+Connected to ws://34.201.250.165:7890/.
+> {"register": true, "device_name": "Karthik Ragunath"}
+< Device Successfully Registered. Note down your api_key: gVB3achk3hLjMqpt
+> {"auth_key":"gVB3achk3hLjMqpt", "is_group": true, "message": "Hey Guys!!!"}
+< Message from Karthik Ragunath: {"auth_key":"gVB3achk3hLjMqpt", "is_group": true, "message": "Hey Guys!!!"}
+>
+```
