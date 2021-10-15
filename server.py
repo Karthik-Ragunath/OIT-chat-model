@@ -38,7 +38,7 @@ def get_device_mappings(auth_key, websocket):
         auth_hash = str(r_auth_checker.hget("auth_hash", auth_key))
     if auth_hash and r_auth_checker.hexists('device_mapping', auth_hash):
         device_mapping = str(r_auth_checker.hget("device_mapping", auth_hash))
-    print("Auth Hash:", auth_hash, "Device Mapping:", device_mappin, "Inside GET DEVICE MAPPINGS")
+    print("Auth Hash:", auth_hash, "Device Mapping:", device_mapping, "Inside GET DEVICE MAPPINGS")
     if auth_hash and device_mapping:
         return auth_hash, device_mapping
     return None, None
