@@ -212,6 +212,8 @@ async def echo(websocket, path):
                     await from_conn_obj.websocket_conn.send(to_id + " is not online yet")
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
+    except Exception as e:
+        print("Unhandled Exception has occured")
 
 
 start_server = websockets.serve(echo, "0.0.0.0", PORT_TO_LISTEN, reuse_port=True)
