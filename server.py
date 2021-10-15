@@ -92,7 +92,7 @@ def extract_info(message, websocket):
         print("Cannot authenticate")
 
     if message.get('disconnect', False):
-        print("Yes, Came Inside")
+        message_parser['disconnect'] = True
         message_parser['is_valid'] = True
         return message_parser
 
