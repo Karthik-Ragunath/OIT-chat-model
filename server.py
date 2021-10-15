@@ -153,7 +153,6 @@ async def echo(websocket, path):
                     if message_info.get('is_valid', False):
                         connected_set.add(websocket)
                         conn_obj = connection_object(message_info['device_mapping'], websocket)
-                        print(message_info['device_mapping'], type(message_info['device_mapping']), '*'*20)
                         connection_dict[message_info['device_mapping']] = conn_obj
                         await conn_obj.websocket_conn.send("Device Successfully Registered. Note down your api_key: " + message_info['auth_key'])
                     else:
@@ -165,8 +164,7 @@ async def echo(websocket, path):
                 print("Invalid message, nothing to do here")
                 continue
             from_id = message_info['from_id']
-            print("From ID:", from_id)
-            from_conn_obj = connection_object[from_id]
+            from_conn_obj = connection_dict[from_id]
             print("Received message from client: " + message)
             ## for broadcasting to everyone; basically message from server
             #await websocket.send("Pong: " + "Thanks for the message. I will do the needful")
