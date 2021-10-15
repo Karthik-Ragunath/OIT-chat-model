@@ -43,6 +43,7 @@ def handle_search_queries(query):
         solr_docs = response['docs']
         if solr_docs:
             top_result = solr_docs[0]
+            print("Top Result:", top_result)
             top_response = top_result['answer'] + " " + top_result['http_link']
             return top_response
         return "Our representative will get in-touch with you"
