@@ -154,7 +154,7 @@ async def echo(websocket, path):
                         connected_set.add(websocket)
                         conn_obj = connection_object(message_info['device_mapping'], websocket)
                         connection_dict[message_info['device_mapping']] = conn_obj
-                        await conn_obj.websocket_conn.send("Device Successfully Registered")
+                        await conn_obj.websocket_conn.send("Device Successfully Registered. Note down your api_key: " + message_info['auth_key'])
                     else:
                         await websocket.send("Could Not Register Your Device Successfully")
                 else:
