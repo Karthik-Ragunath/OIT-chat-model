@@ -122,7 +122,7 @@ def handle_disconnection(message_info):
     r_auth_checker.hdel('auth_hash', message_info['auth_key'])
     r_auth_checker.hdel('device_mapping', message_info['auth_hash'])
     r_auth_checker.hdel('reverse_device_mapping', message_info['device_mapping'])
-    connected_set.remove(connection_dict[message_info['device_mapping']])
+    connected_set.remove(connection_dict[message_info['device_mapping']].websocket_conn)
     connection_dict.pop(message_info['device_mapping'], None)
 
 
