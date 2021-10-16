@@ -17,6 +17,10 @@ Redis Queues
 
 ```
 
+### Architecture
+
+![alt text](/Assets/OIT-Chat-Model-Architecture.pdf)
+
 ### Working Modes
 ```
 This chat system is designed to work in three modes:
