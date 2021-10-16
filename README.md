@@ -19,7 +19,7 @@ Redis Queues
 
 ### Architecture
 
-![alt text](/Assets/OIT-Chat-Model-Architecture.pdf)
+![alt text](/Assets/OIT-Chat-Model-Architecture.jpg)
 
 ### Working Modes
 ```
