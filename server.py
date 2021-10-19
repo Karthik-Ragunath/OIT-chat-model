@@ -52,6 +52,7 @@ def handle_search_queries(query):
             top_result = solr_docs[0]
             print("Top Result:", top_result)
             top_response = top_result['answer'] + " " + top_result['http_link']
+            top_response = "AutomatedResponse: " + top_response
             return top_response
         return "Our representative will get in-touch with you"
     except Exception as e:
@@ -155,6 +156,7 @@ async def async_server(websocket, path):
         async for message in websocket:
             try:
                 deserialized_message = json.loads(message)
+                print("Deserialized Message:", deserialized_message)
             except Exception as e:
                 print("Message is not in a state where it could be deserialize the messgae. Skipping this message.")
                 continue
