@@ -17,9 +17,11 @@ redis_host = "auth-data.44nnpy.ng.0001.use1.cache.amazonaws.com"
 r_auth_checker = Redis(host=redis_host, port=6379)
 
 # Parameters of Apache Solr Search Engine hosted in a EC2 machine
-solr_ip = "54.227.45.228"
+# solr_ip = "54.227.45.228"
+solr_ip = "18.209.57.254"
 PORT = "8983"
-CORENAME = "oit_help_desk"
+# CORENAME = "oit_help_desk"
+COLLECTION_NAME = "oit_cluster"
 
 # Data variables used for in-memory computations
 connected_set = set()
@@ -41,7 +43,7 @@ class connection_object(object):
 # Just an illustration of backend infraset to make search queries work
 # Very few data is indexed in Solr at the moment. Just for illustration purpose
 def handle_search_queries(query):
-    solr_url = "http://" + solr_ip + ':' + PORT + "/solr/" + CORENAME + "/select"
+    solr_url = "http://" + solr_ip + ':' + PORT + "/solr/" + COLLECTION_NAME + "/select"
     fq_query = 'question:' + query
     print("fq_query:", fq_query)
     r = requests.get(solr_url, params={"fq":fq_query, "q":"*:*"})
